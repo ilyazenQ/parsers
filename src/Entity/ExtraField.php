@@ -3,14 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\CategoryRepository;
+use App\Repository\ExtraFieldRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\Entity(repositoryClass: ExtraFieldRepository::class)]
 #[ApiResource]
-class Category
+class ExtraField
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,12 +18,12 @@ class Category
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private ?string $property = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $slug = null;
+    private ?string $value = null;
 
-    #[ORM\OneToMany(mappedBy: 'Category', targetEntity: Product::class)]
+    #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'Property')]
     private Collection $products;
 
     public function __construct()
@@ -36,26 +36,26 @@ class Category
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getProperty(): ?string
     {
-        return $this->title;
+        return $this->property;
     }
 
-    public function setTitle(string $title): self
+    public function setProperty(string $property): self
     {
-        $this->title = $title;
+        $this->property = $property;
 
         return $this;
     }
 
-    public function getSlug(): ?string
+    public function getValue(): ?string
     {
-        return $this->slug;
+        return $this->value;
     }
 
-    public function setSlug(string $slug): self
+    public function setValue(string $value): self
     {
-        $this->slug = $slug;
+        $this->value = $value;
 
         return $this;
     }
@@ -72,7 +72,7 @@ class Category
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
-            $product->setCategory($this);
+            $product->addProperty($this);
         }
 
         return $this;
@@ -81,10 +81,7 @@ class Category
     public function removeProduct(Product $product): self
     {
         if ($this->products->removeElement($product)) {
-            // set the owning side to null (unless already changed)
-            if ($product->getCategory() === $this) {
-                $product->setCategory(null);
-            }
+            $product->removeProperty($this);
         }
 
         return $this;

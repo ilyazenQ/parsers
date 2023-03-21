@@ -3,14 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\CategoryRepository;
+use App\Repository\ShopVendorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\Entity(repositoryClass: ShopVendorRepository::class)]
 #[ApiResource]
-class Category
+class ShopVendor
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,10 +20,7 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $slug = null;
-
-    #[ORM\OneToMany(mappedBy: 'Category', targetEntity: Product::class)]
+    #[ORM\OneToMany(mappedBy: 'ShopVendor', targetEntity: Product::class)]
     private Collection $products;
 
     public function __construct()
@@ -48,18 +45,6 @@ class Category
         return $this;
     }
 
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Product>
      */
@@ -72,7 +57,7 @@ class Category
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
-            $product->setCategory($this);
+            $product->setShopVendor($this);
         }
 
         return $this;
@@ -82,8 +67,8 @@ class Category
     {
         if ($this->products->removeElement($product)) {
             // set the owning side to null (unless already changed)
-            if ($product->getCategory() === $this) {
-                $product->setCategory(null);
+            if ($product->getShopVendor() === $this) {
+                $product->setShopVendor(null);
             }
         }
 
