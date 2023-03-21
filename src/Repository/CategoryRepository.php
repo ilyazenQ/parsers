@@ -39,6 +39,14 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
+    public function findOrFail(int $id): Category {
+            $cat = $this->find($id);
+            if (null === $cat) {
+                throw new \InvalidArgumentException('Entity not found.');
+            }
+            return $cat;
+    }
+
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */
