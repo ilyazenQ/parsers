@@ -48,8 +48,8 @@ class ParserWbCommand extends Command
         $this->parserService->process($cat);
         // Получаем содержимое страницы
 
-    $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+        $io->success('Done: shop - wb, category - '. $cat->getSlug());
 
-    return Command::SUCCESS;
+        return Command::SUCCESS;
     }
 }
