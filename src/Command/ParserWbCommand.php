@@ -44,6 +44,7 @@ class ParserWbCommand extends Command
 
             return Command::FAILURE;
         }
+        $io->info('Start parsing from WB');
         $cat = $this->categoryRepository->findOrFail($catId);
         $this->parserService->process($cat);
         // Получаем содержимое страницы

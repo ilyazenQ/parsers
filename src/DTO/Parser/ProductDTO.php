@@ -18,6 +18,8 @@ class ProductDTO implements DTOInterface {
 
     private ?int $FullPrice = null;
 
+    private ?int $diffPrice = null;
+
     private ?int $SalePrice = null;
 
     private ?Category $Category = null;
@@ -184,6 +186,18 @@ class ProductDTO implements DTOInterface {
     public function setShopVendor(?ShopVendor $ShopVendor): self
     {
         $this->ShopVendor = $ShopVendor;
+
+        return $this;
+    }
+
+    public function getDiffPrice(): ?int
+    {
+        return $this->diffPrice;
+    }
+
+    public function setDiffPrice(int $diffPrice): self
+    {
+        $this->diffPrice = $diffPrice;
 
         return $this;
     }

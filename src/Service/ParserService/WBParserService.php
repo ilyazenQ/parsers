@@ -20,14 +20,21 @@ class WBParserService implements ParserServiceInterface{
         $page = 0;
         do {
             $page++;
-            $apiUrl = $this->config::CATEGORY_URL[$category->getSlug()]."&page={$page}";
+            $apiUrl = $this->config::CATEGORY_CONFIG[$category->getSlug()]['url']."&page={$page}";
             $data = $this->fetchWBService->fetch($apiUrl);
             $this->parse($category, $data);    
         } while (count($data) > 0);
     }
 
+    private function checkSubjectId(array $item, Category $category):bool {
+        return in_array($item['subjectId'], $this->config::CATEGORY_CONFIG[$category->getSlug()]['skip_subject']);
+    }
+
     private function parse(Category $category, array $data):void { 
         foreach ($data as $item) {
+            if($this->checkSubjectId($item, $category)) {
+                continue;
+            }
             $this->processProduct($item, $category);
         }
     }
@@ -37,7 +44,7 @@ class WBParserService implements ParserServiceInterface{
         $this->productRepository->updateOrCreate($productDTO);
     }
 
-    //TODO ADD validation on DTO
+    //TODO ADD validation to DTO
     private function processProductDTO(array $item, Category $category):ProductDTO {
         $productDTO = new ProductDTO();
         $productDTO->setName($item['name']);
@@ -46,6 +53,7 @@ class WBParserService implements ParserServiceInterface{
         $productDTO->setFullPrice($item['priceU']);
         $productDTO->setSalePrice($item['salePriceU']);
         $productDTO->setCategory($category);
+        $productDTO->setDiffPrice($productDTO->getFullPrice() - $productDTO->getSalePrice());
         $productDTO->setExtra($item);
         $productDTO->setShopVendor($this->config->getShopVendor());
         $productDTO->setLink($this->config->generateLink($item['id']));

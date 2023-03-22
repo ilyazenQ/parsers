@@ -53,6 +53,9 @@ class Product
     #[ORM\Column(length: 255)]
     private ?string $link = null;
 
+    #[ORM\Column]
+    private ?int $diffPrice = null;
+
     public function __construct()
     {
         $this->Property = new ArrayCollection();
@@ -215,6 +218,18 @@ class Product
     public function setLink(string $link): self
     {
         $this->link = $link;
+
+        return $this;
+    }
+
+    public function getDiffPrice(): ?int
+    {
+        return $this->diffPrice;
+    }
+
+    public function setDiffPrice(int $diffPrice): self
+    {
+        $this->diffPrice = $diffPrice;
 
         return $this;
     }

@@ -57,6 +57,7 @@ class ProductRepository extends ServiceEntityRepository
         $product->setSalePrice($productDTO->getSalePrice());
         $product->setCategory($productDTO->getCategory());
         $product->setExtra($productDTO->getExtra());
+        $product->setDiffPrice($productDTO->getDiffPrice());
         $product->setShopVendor($productDTO->getShopVendor());
         $product->setLink($productDTO->getLink());
         $product->setUpdatedAt($datetime);
