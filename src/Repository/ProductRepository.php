@@ -46,10 +46,12 @@ class ProductRepository extends ServiceEntityRepository
         $product = $this->findOneBy(['externalId' => $productDTO->getExternalId()]);
         $datetime = new DateTime; // Create DateTime for current time
         $datetime = DateTimeImmutable::createFromMutable($datetime);
+        
         if(is_null($product)) {
             $product = new Product();
             $product->setCreatedAt($datetime);
         }
+
         $product->setName($productDTO->getName());
         $product->setBrandName($productDTO->getBrandName());
         $product->setExternalId($productDTO->getExternalId());
