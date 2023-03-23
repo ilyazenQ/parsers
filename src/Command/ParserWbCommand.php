@@ -47,8 +47,6 @@ class ParserWbCommand extends Command
         $io->info('Start parsing from WB');
         $cat = $this->categoryRepository->findOrFail($catId);
         $this->parserService->process($cat);
-        // Получаем содержимое страницы
-
         $io->success('Done: shop - wb, category - '. $cat->getSlug());
 
         return Command::SUCCESS;
