@@ -4,6 +4,25 @@
 
 {% block body %}
     <h1>Product index</h1>
+    <form method="GET" action="{{ path('app_product_index') }}">
+    <label for="category">Select a category:</label>
+    <select id="category" name="filter[category]">
+        {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.title }}</option>
+        {% endfor %}
+    </select>
+        <label for="sort-field">Select a sort field:</label>
+    <select id="sort-field" name="sort[field]">
+            <option value="diffPrice">diff price</option>
+            <option value="SalePrice">sale price</option>
+    </select>
+           <label for="sort-val">Select a sort val:</label>
+    <select id="sort-val" name="sort[val]">
+            <option value="ASC">ASC</option>
+            <option value="DESC">DESC</option>
+    </select>
+    <button type="submit">Filter</button>
+    </form>
 
     <table class="table">
         <thead>

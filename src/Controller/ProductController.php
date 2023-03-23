@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Form\ProductType;
+use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
+use App\Service\FilterService\ProductFilterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +16,17 @@ use Symfony\Component\Routing\Annotation\Route;
 class ProductController extends AbstractController
 {
     #[Route('/', name: 'app_product_index', methods: ['GET'])]
-    public function index(ProductRepository $productRepository): Response
+    public function index(
+    Request $request,
+    ProductRepository $productRepository, 
+    CategoryRepository $categoryRepository,
+    ProductFilterService $productFilterService): Response
     {
+        $productFilterService->process($request);
+        
         return $this->render('product/index.html.twig', [
-            'products' => $productRepository->findBy([], ['diffPrice' => 'DESC']),
+            'categories' => $categoryRepository->findAll(),
+            'products' => $productRepository->findBy($productFilterService->getFilter(), $productFilterService->getSort()),
         ]);
     }
 
@@ -75,4 +84,5 @@ class ProductController extends AbstractController
 
         return $this->redirectToRoute('app_product_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }
