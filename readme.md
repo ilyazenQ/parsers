@@ -13,7 +13,9 @@
 ## *Описание
 
 Swagger: доступен по url - /api. (CRUD) <br>
+<img src="/image/swagger.png">
 Index(листинг товаров с фильтрами): доступен по url - /product <br>
+<img src="/image/index.png">
 Запуск парсеров (на примере Wb) -  <br>
 `bin/console parser:wb --cat={cat_id}`<br>
 cat_id* - Id категории, для которой запускается парсер.<br>
