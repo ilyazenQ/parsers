@@ -64,7 +64,7 @@ class ProductRepository extends ServiceEntityRepository
         $product->setLink($productDTO->getLink());
         $product->setUpdatedAt($datetime);
 
-        $this->save($product, true);
+        $this->save($product, false);
     }
 
 /*

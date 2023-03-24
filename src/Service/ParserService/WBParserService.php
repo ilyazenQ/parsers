@@ -7,12 +7,14 @@ use App\Service\ParserService\FetchWBService;
 use App\Entity\Category;
 use App\Repository\ProductRepository;
 use App\Service\ParserService\Config\WBConfig;
+use Doctrine\ORM\EntityManagerInterface;
 
 class WBParserService implements ParserServiceInterface{
     public function __construct(
         private readonly FetchWBService $fetchWBService,
         private readonly WBConfig $config,
         private readonly ProductRepository $productRepository,
+        private readonly EntityManagerInterface $entityManager,
     ) {
 
     }
@@ -37,6 +39,9 @@ class WBParserService implements ParserServiceInterface{
             }
             $this->processProduct($item, $category);
         }
+        $this->entityManager->flush();
+      //  $this->entityManager->clear();
+        gc_collect_cycles();
     }
 
     private function processProduct(array $item, Category $category):void {
