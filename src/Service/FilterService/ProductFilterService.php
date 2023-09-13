@@ -2,35 +2,51 @@
 
 namespace App\Service\FilterService;
 
+use App\DTO\Filter\Product\ProductFilterRequestDTO;
+use App\DTO\Parser\DTOInterface;
 use App\Repository\CategoryRepository;
 use Symfony\Component\HttpFoundation\Request;
 
-class ProductFilterService {
-    
+class ProductFilterService
+{
+
     private array $filter = [];
     private array $sort = [];
+
     public function __construct(
         private readonly CategoryRepository $categoryRepository,
-    )
-    {
-        
-    }
-    public function process(Request $request): void {
-        $category = isset($request->query->all()['filter']['category'])? $request->query->all()['filter']['category']:null;
-        $this->filter = $category ? ['Category'=> $this->categoryRepository->find($category)]:[];
-        $sortField = isset($request->query->all()['sort']['field'])? $request->query->all()['sort']['field']:null;
-        $sortVal = isset($request->query->all()['sort']['val'])? $request->query->all()['sort']['val']:null;
-        $this->sort = ['diffPrice' => 'DESC'];
-        if($sortField && $sortVal) {
-            $this->sort = [$sortField => $sortVal];
-        }
+    ) {
     }
 
-    public function getFilter(): array {
+    public function process(Request $request): void
+    {
+        $productFilterRequestDTO = new ProductFilterRequestDTO($request->query->all());
+
+        $this->applyFilters($productFilterRequestDTO);
+        $this->applySort($productFilterRequestDTO);
+    }
+
+    public function getFilter(): array
+    {
         return $this->filter;
     }
 
-    public function getSort(): array {
+    public function getSort(): array
+    {
         return $this->sort;
+    }
+
+    private function applyFilters(DTOInterface $DTO): array
+    {
+        $this->filter = $DTO->category ? [
+            'Category' => $this->categoryRepository->find(
+                $DTO->category
+            )
+        ] : [];
+    }
+
+    private function applySort(DTOInterface $DTO): array
+    {
+        $this->sort = [$DTO->sortField => $DTO->sortVal];
     }
 }

@@ -4,11 +4,15 @@
 
 ## Разворот
 
-1. `git clone https://github.com/ilyazenQ/parsers.git
-   <new-repo-name>`
-2. `make dc_up`<br>
-3. `make app_bash`<br>
-4. `bin/console doctrine:migrations:migrate`<br>
+1. `git clone https://github.com/ilyazenQ/parsers.git` <br>
+2. `cd parsers`
+3. `cp docker/.env.dist docker/.env`<br>
+4. `make dc_build`<br>
+5. `make dc_up` <br>
+6. `make app_bash`<br>
+7. `composer install` <br>
+8. `bin/console doctrine:migrations:migrate`<br>
+9. `exit`<br>
 
 ## *Описание
 

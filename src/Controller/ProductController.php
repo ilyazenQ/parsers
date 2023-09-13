@@ -17,16 +17,20 @@ class ProductController extends AbstractController
 {
     #[Route('/', name: 'app_product_index', methods: ['GET'])]
     public function index(
-    Request $request,
-    ProductRepository $productRepository, 
-    CategoryRepository $categoryRepository,
-    ProductFilterService $productFilterService): Response
-    {
+        Request $request,
+        ProductRepository $productRepository,
+        CategoryRepository $categoryRepository,
+        ProductFilterService $productFilterService
+    ): Response {
+
         $productFilterService->process($request);
-        
+
         return $this->render('product/index.html.twig', [
             'categories' => $categoryRepository->findAll(),
-            'products' => $productRepository->findBy($productFilterService->getFilter(), $productFilterService->getSort()),
+            'products' => $productRepository->findBy(
+                $productFilterService->getFilter(),
+                $productFilterService->getSort()
+            ),
         ]);
     }
 
@@ -78,7 +82,7 @@ class ProductController extends AbstractController
     #[Route('/{id}', name: 'app_product_delete', methods: ['POST'])]
     public function delete(Request $request, Product $product, ProductRepository $productRepository): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $product->getId(), $request->request->get('_token'))) {
             $productRepository->remove($product, true);
         }
 

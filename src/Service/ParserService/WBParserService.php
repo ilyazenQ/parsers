@@ -9,48 +9,51 @@ use App\Repository\ProductRepository;
 use App\Service\ParserService\Config\WBConfig;
 use Doctrine\ORM\EntityManagerInterface;
 
-class WBParserService implements ParserServiceInterface{
+class WBParserService implements ParserServiceInterface
+{
     public function __construct(
         private readonly FetchWBService $fetchWBService,
         private readonly WBConfig $config,
         private readonly ProductRepository $productRepository,
         private readonly EntityManagerInterface $entityManager,
     ) {
-
     }
-    public function process(Category $category):void {
+
+    public function process(Category $category): void
+    {
         $page = 0;
         do {
             $page++;
-            $apiUrl = $this->config::CATEGORY_CONFIG[$category->getSlug()]['url']."&page={$page}";
+            $apiUrl = $this->config::CATEGORY_CONFIG[$category->getSlug()]['url'] . "&page={$page}";
             $data = $this->fetchWBService->fetch($apiUrl);
-            $this->parse($category, $data);    
+            $this->parse($category, $data);
         } while (count($data) > 0);
     }
 
-    private function checkSubjectId(array $item, Category $category):bool {
+    private function isSkipSubject(array $item, Category $category): bool
+    {
         return in_array($item['subjectId'], $this->config::CATEGORY_CONFIG[$category->getSlug()]['skip_subject']);
     }
 
-    private function parse(Category $category, array $data):void { 
+    private function parse(Category $category, array $data): void
+    {
         foreach ($data as $item) {
-            if($this->checkSubjectId($item, $category)) {
+            if ($this->isSkipSubject($item, $category)) {
                 continue;
             }
             $this->processProduct($item, $category);
         }
         $this->entityManager->flush();
-      //  $this->entityManager->clear();
-        gc_collect_cycles();
     }
 
-    private function processProduct(array $item, Category $category):void {
+    private function processProduct(array $item, Category $category): void
+    {
         $productDTO = $this->processProductDTO($item, $category);
         $this->productRepository->updateOrCreate($productDTO);
     }
 
-    //TODO ADD validation to DTO
-    private function processProductDTO(array $item, Category $category):ProductDTO {
+    private function processProductDTO(array $item, Category $category): ProductDTO
+    {
         $productDTO = new ProductDTO();
         $productDTO->setName($item['name']);
         $productDTO->setBrandName($item['brand']);

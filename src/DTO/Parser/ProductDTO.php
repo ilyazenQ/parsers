@@ -1,12 +1,15 @@
 <?php
 
 namespace App\DTO\Parser;
+
 use App\Entity\Category;
 use App\Entity\ExtraField;
 use App\Entity\ShopVendor;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
-class ProductDTO implements DTOInterface {
+class ProductDTO implements DTOInterface
+{
 
     private ?int $id = null;
 
@@ -38,7 +41,7 @@ class ProductDTO implements DTOInterface {
 
     public function __construct()
     {
-        $this->Property = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Property = new ArrayCollection();
     }
 
     public function getId(): ?int

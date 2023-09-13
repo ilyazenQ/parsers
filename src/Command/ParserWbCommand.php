@@ -21,17 +21,15 @@ class ParserWbCommand extends Command
     public function __construct(
         private readonly WBParserService $parserService,
         private readonly CategoryRepository $categoryRepository,
-        )
-    {
+    ) {
         parent::__construct();
     }
 
-    
+
     protected function configure(): void
     {
         $this
-            ->addOption('cat', null, InputOption::VALUE_REQUIRED, 'Pass a category id')
-        ;
+            ->addOption('cat', null, InputOption::VALUE_REQUIRED, 'Pass a category id');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -39,15 +37,16 @@ class ParserWbCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $catId = $input->getOption('cat');
 
-        if (null === $catId) {
+        if ($catId === null) {
             $io->error('You must pass a category id');
 
             return Command::FAILURE;
         }
+
         $io->info('Start parsing from WB');
         $cat = $this->categoryRepository->findOrFail($catId);
         $this->parserService->process($cat);
-        $io->success('Done: shop - wb, category - '. $cat->getSlug());
+        $io->success('Done: shop - wb, category - ' . $cat->getSlug());
 
         return Command::SUCCESS;
     }
